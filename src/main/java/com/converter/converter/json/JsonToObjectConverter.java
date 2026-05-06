@@ -5,7 +5,7 @@ import com.converter.exception.ConversionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonToObjectConverter<T> implements Converter<String, T> {
+public class JsonToObjectConverter<T> implements Converter<JsonString, T> {
 
     private final Class<T> type;
     private final ObjectMapper objectMapper;
@@ -16,17 +16,17 @@ public class JsonToObjectConverter<T> implements Converter<String, T> {
     }
 
     @Override
-    public T convert(String source) {
+    public T convert(JsonString source) {
         try {
-            return objectMapper.readValue(source, type);
+            return objectMapper.readValue(source.value(), type);
         } catch (JsonProcessingException e) {
             throw new ConversionException("Failed to deserialize JSON to " + type.getSimpleName(), e);
         }
     }
 
     @Override
-    public Class<String> sourceType() {
-        return String.class;
+    public Class<JsonString> sourceType() {
+        return JsonString.class;
     }
 
     @Override

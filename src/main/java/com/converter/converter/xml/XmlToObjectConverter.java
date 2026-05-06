@@ -5,7 +5,7 @@ import com.converter.exception.ConversionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-public class XmlToObjectConverter<T> implements Converter<String, T> {
+public class XmlToObjectConverter<T> implements Converter<XmlString, T> {
 
     private final Class<T> type;
     private final XmlMapper xmlMapper;
@@ -16,17 +16,17 @@ public class XmlToObjectConverter<T> implements Converter<String, T> {
     }
 
     @Override
-    public T convert(String source) {
+    public T convert(XmlString source) {
         try {
-            return xmlMapper.readValue(source, type);
+            return xmlMapper.readValue(source.value(), type);
         } catch (JsonProcessingException e) {
             throw new ConversionException("Failed to deserialize XML to " + type.getSimpleName(), e);
         }
     }
 
     @Override
-    public Class<String> sourceType() {
-        return String.class;
+    public Class<XmlString> sourceType() {
+        return XmlString.class;
     }
 
     @Override

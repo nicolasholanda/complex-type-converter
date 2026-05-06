@@ -5,7 +5,7 @@ import com.converter.exception.ConversionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ObjectToJsonConverter<S> implements Converter<S, String> {
+public class ObjectToJsonConverter<S> implements Converter<S, JsonString> {
 
     private final Class<S> type;
     private final ObjectMapper objectMapper;
@@ -16,9 +16,9 @@ public class ObjectToJsonConverter<S> implements Converter<S, String> {
     }
 
     @Override
-    public String convert(S source) {
+    public JsonString convert(S source) {
         try {
-            return objectMapper.writeValueAsString(source);
+            return new JsonString(objectMapper.writeValueAsString(source));
         } catch (JsonProcessingException e) {
             throw new ConversionException("Failed to serialize " + type.getSimpleName() + " to JSON", e);
         }
@@ -30,7 +30,7 @@ public class ObjectToJsonConverter<S> implements Converter<S, String> {
     }
 
     @Override
-    public Class<String> targetType() {
-        return String.class;
+    public Class<JsonString> targetType() {
+        return JsonString.class;
     }
 }

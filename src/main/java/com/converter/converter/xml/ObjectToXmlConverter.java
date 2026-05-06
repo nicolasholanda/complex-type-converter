@@ -5,7 +5,7 @@ import com.converter.exception.ConversionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-public class ObjectToXmlConverter<S> implements Converter<S, String> {
+public class ObjectToXmlConverter<S> implements Converter<S, XmlString> {
 
     private final Class<S> type;
     private final XmlMapper xmlMapper;
@@ -16,11 +16,11 @@ public class ObjectToXmlConverter<S> implements Converter<S, String> {
     }
 
     @Override
-    public String convert(S source) {
+    public XmlString convert(S source) {
         try {
-            return xmlMapper.writer()
+            return new XmlString(xmlMapper.writer()
                     .withRootName(type.getSimpleName())
-                    .writeValueAsString(source);
+                    .writeValueAsString(source));
         } catch (JsonProcessingException e) {
             throw new ConversionException("Failed to serialize " + type.getSimpleName() + " to XML", e);
         }
@@ -32,7 +32,7 @@ public class ObjectToXmlConverter<S> implements Converter<S, String> {
     }
 
     @Override
-    public Class<String> targetType() {
-        return String.class;
+    public Class<XmlString> targetType() {
+        return XmlString.class;
     }
 }
